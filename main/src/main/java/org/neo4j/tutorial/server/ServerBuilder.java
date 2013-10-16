@@ -53,7 +53,7 @@ public class ServerBuilder
             @Override
             protected Database createDatabase()
             {
-                return new CommunityDatabase( configurator.configuration() );
+                return new CommunityDatabase( configurator );
             }
         };
     }
