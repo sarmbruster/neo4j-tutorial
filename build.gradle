@@ -39,3 +39,11 @@ subprojects {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.8'
 }
+
+task snippets << {
+    ant.replaceregexp(match:"// SNIPPET_START(.+?)// SNIPPET_END",
+            replace:"",
+            flags:"gis") {
+        ant.fileset dir:"koan/src/test/java", includes:"**/*.java"
+    }
+}
