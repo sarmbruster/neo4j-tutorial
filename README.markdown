@@ -15,7 +15,7 @@ These are very desirable characteristics when it comes to learning Neo4j too, an
 Prerequisites
 -------------
 
-You'll need to be familiar with the Java programming language for some of the early Koans and confident enough in Java to be able to run JUnit tests. If you like a particular IDE like Eclipse or IntelliJ, that's helpful but you can run these Koans from the command line too using an [Ant](http://ant.apache.org) script. All the Neo4j skills you'll need will be developed as part of completing the Koans.
+You'll need to be familiar with the Java programming language for some of the early Koans and confident enough in Java to be able to run JUnit tests. If you like a particular IDE like Eclipse or IntelliJ, that's helpful but you can run these Koans from the command line too using an [Gradle](http://www.gradle.org) script. All the Neo4j skills you'll need will be developed as part of completing the Koans.
 
 Setting up Koans
 ----------------
@@ -28,23 +28,21 @@ To download the latest version of the koans as a zipfile, click on the following
 
 [https://github.com/jimwebber/neo4j-tutorial/zipball/master](https://github.com/jimwebber/neo4j-tutorial/zipball/master)
 
-Once you have cloned or downloaded and unzipped the koans, you're almost ready. You just need the Neo4j binary dependencies, which you can get by running the default Apache Ant target from the root directory:
+Once you have cloned or downloaded and unzipped the koans, you're almost ready. You just need the Neo4j binary dependencies, which you can get by running Gradle from the root directory:
 
-    ant 
+    ./gradlew
 
-We use Apache Ivy for dependency resolution and for all the many wonderful benefits Ant and Ivy provide, speed isn't one of them so you might want to go fetch a cup of tea while you're waiting for (seemingly) most of the Internet to download. 
+When invoking this command for the very first time it might take some time to download all the dependencies, so you might want to go fetch a cup of tea while you're waiting for (seemingly) most of the Internet to download.
 
-Once the default Ant target has completed, you'll find it has dropped a set of libraries in the lib directory immediately under your Koan directory. It has also run the Koans and the unit tests that validate that everything's ready and will have left a report under:
+It has also run the Koans and the unit tests that validate that everything's ready and will have left a report under:
 
-    target/koan/reports/output/index.html
+    koan/build/reports/tests/index.html
 
-Since the Koans come complete with the answers, if you're going to benefit from following them, you'll need to delete those answers. Fortunately we've provided a sed script that does this for you. From the root directory of your Koan download, run: 
+Since the Koans come complete with the answers, if you're going to benefit from following them, you'll need to delete those answers. Fortunately we've provided a gradle task that does this for you. From the root directory of your Koan download, run:
 
-    src/main/scripts/remove_snippets.sh
+    ./gradlew snippets
 
-Sorry to Windows users, you'll have to run this with [Cygwin](http://www.cygwin.com/) for now.
-
-The sed script removes all lines between
+The snippets task removes all lines between
 
     //SNIPPET_START
     //SNIPPET_END
@@ -53,22 +51,22 @@ in the Koans, leaving them compiling but in a failing state.
 
 If you want to run individual Koans (rather than all of them) then just type the specific Koan's target on the command line. For example to run Koan 5:
 
-   ant run.koan05
-
-and to run all of Koan 8 (which has many parts):
-
-   ant run.koan08
+   cd koan; ../gradlew -Dtest.single=Koan05 test
 
 If you'd prefer to use an IDE, you can of course just use your favourite development environment to run the Koans too.
 
 I want my IDE
 -------------
 
-If you'd like some help in setting up the Koans in your IDE, the Ant script contains a target called generate.eclipse.project. By issuing the command:
+If you'd like some help in setting up the Koans in your IDE, Gradle provides integration for Eclipse and InteliiJ Idea. For building Eclipse project files type:
 
-    ant generate.eclipse.project
+    ./gradlew eclipse
 
-an Eclipse project will be created in the Koan directory. This can be opened easily with Eclipse or Intellij where you can run individual koans as JUnit tests as normal.
+If you prefer Intellij use
+
+    ./gradlew idea
+
+The generated project file can be opened directly with your IDE.
 
 
 Where are my Koans?
@@ -76,7 +74,7 @@ Where are my Koans?
 
 The Koans themselves are in the root directory under:
 
-    src/koan/java
+    koan/src/test/java
 
 and you'll see that they're numerically increasing in number. Start with *Koan01.java* and run it. If you're running the Koans in your IDE, then you can run Koan01.java as a unit test and verify that a Neo4j database can be created and populated with Doctor Who data, and that you have your IDE project set up properly.
 
@@ -115,6 +113,8 @@ Andres Taylor, [@andres_taylor](http://twitter.com/andres_taylor)
 Niklas Uhrberg
 
 [Aleksa Vukotic](http://aleksavukotic.com), [@aleksavukotic](http://twitter.com/aleksavukotic)
+
+[Stefan Armbruster](http://blog.armbruster-it.de), [@darthvader42](http://twitter.com/darthvader42)
 
 Links
 -----

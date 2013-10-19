@@ -1,3 +1,5 @@
+defaultTasks 'test'
+
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
