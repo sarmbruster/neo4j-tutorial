@@ -2,14 +2,20 @@ defaultTasks 'test'
 
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'application'
 
 project.ext {
     jdkVersion = JavaVersion.VERSION_1_7
     sourceCompatibility = jdkVersion
-    neo4jVersion = "1.9.4"
+    neo4jVersion = "2.0.0-M06"
     jerseyVersion = "1.9"
     junitVersion = "4.11"
 }
+
+repositories {
+        mavenCentral()
+        maven { url "http://m2.neo4j.org/content/repositories/releases/" }
+    }
 
 subprojects {
     apply plugin: "java"
@@ -19,6 +25,16 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "http://m2.neo4j.org/content/repositories/releases/" }
+    }
+    idea {
+        module {
+            downloadJavadoc = true
+        }
+    }
+    eclipse {
+        classpath {
+            downloadJavadoc = true
+        }
     }
 }
 
@@ -45,3 +61,15 @@ task snippets << {
         ant.fileset dir:"koan/src/test/java", includes:"**/*.java"
     }
 }
+
+// gradle run invokes the shell
+dependencies {
+    runtime group: 'org.neo4j', name: 'neo4j-shell', version: neo4jVersion
+    runtime group: 'org.neo4j', name: 'neo4j-kernel', version: neo4jVersion
+}
+mainClassName = 'org.neo4j.shell.StartClient'
+
+/*TODO: 
+* implement task shell
+* REST Client: cypher + transactional endpoint
+*/

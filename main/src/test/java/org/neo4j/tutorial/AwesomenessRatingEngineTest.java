@@ -2,15 +2,15 @@ package org.neo4j.tutorial;
 
 import static junit.framework.Assert.assertEquals;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 
 public class AwesomenessRatingEngineTest
 {
 
     private static EmbeddedDoctorWhoUniverse universe;
+    private Transaction tx;
 
     @BeforeClass
     public static void createDatabase() throws Exception
@@ -22,6 +22,16 @@ public class AwesomenessRatingEngineTest
     public static void closeTheDatabase()
     {
         universe.stop();
+    }
+
+    @Before
+    public void openTransaction() {
+        tx = universe.getDatabase().beginTx();
+    }
+
+    @After
+    public void closeTransaction() {
+        tx.close();
     }
 
     @Test
