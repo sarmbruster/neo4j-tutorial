@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 
@@ -69,6 +70,7 @@ public class CharacterBuilder
             {
                 ensureRelationshipInDb( characterNode, DoctorWhoRelationships.IS_A,
                         SpeciesBuilder.ensureSpeciesInDb( speciesString, db ) );
+                characterNode.addLabel( DynamicLabel.label( speciesString ) );
             }
         }
 
@@ -280,6 +282,7 @@ public class CharacterBuilder
         {
             theCharacterNode = db.createNode();
             theCharacterNode.setProperty( "character", name );
+            theCharacterNode.addLabel( DoctorWhoLabels.Character );
             ensureCharacterIsIndexed( theCharacterNode, db );
         }
         return theCharacterNode;

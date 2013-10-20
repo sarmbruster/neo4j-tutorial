@@ -2,8 +2,10 @@ package org.neo4j.tutorial;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.*;
@@ -15,8 +17,10 @@ import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.traversal.Evaluation;
 import org.neo4j.graphdb.traversal.Evaluator;
 import org.neo4j.graphdb.traversal.Traverser;
+import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.kernel.Traversal;
 import org.neo4j.kernel.Uniqueness;
+import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * Be careful when adding tests here - each test in this class uses the same
@@ -529,4 +533,19 @@ public class DoctorWhoUniverseGeneratorTest
         }
         return false;
     }
+
+    @Test
+    public void shouldFindTheDoctorByLabelAndCharacter() {
+        Node doctor = IteratorUtil.single( database.findNodesByLabelAndProperty( DynamicLabel.label( "Timelord" ),
+                "character", "Doctor" ) );
+        assertNotNull( doctor );
+    }
+
+    @Test
+    public void shouldAllCharactersHaveLabels() {
+        assertEquals(180, IteratorUtil.count(
+                GlobalGraphOperations.at( database ).getAllNodesWithLabel( DoctorWhoLabels.Character )
+        ));
+    }
+
 }
