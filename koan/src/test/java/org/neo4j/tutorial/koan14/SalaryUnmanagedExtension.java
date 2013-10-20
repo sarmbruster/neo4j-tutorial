@@ -23,7 +23,7 @@ public class SalaryUnmanagedExtension
         String cql = null;
 
         cql = "start actor = node:actors(actor = '" + actor + "')"
-                + "return actor.salary? as salary";
+                + "return actor.salary as salary";
 
         ExecutionResult result = engine.execute( cql );
         Object salary = result.javaColumnAs( "salary" ).next();

@@ -48,17 +48,23 @@ public class Koan03
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        characters = universe.getDatabase()
-                .index()
-                .forNodes( "characters" );
+        try ( Transaction tx = universe.getDatabase().beginTx() )
+        {
+            characters = universe.getDatabase()
+                    .index()
+                    .forNodes( "characters" );
+        }
 
         // SNIPPET_END
 
-        assertNotNull( characters );
-        assertThat(
-                characters,
-                contains( "Master", "River Song", "Rose Tyler", "Adam Mitchell", "Jack Harkness", "Mickey Smith",
-                        "Donna Noble", "Martha Jones" ) );
+        try ( Transaction tx = universe.getDatabase().beginTx() )
+        {
+            assertNotNull( characters );
+            assertThat(
+                    characters,
+                    contains( "Master", "River Song", "Rose Tyler", "Adam Mitchell", "Jack Harkness", "Mickey Smith",
+                            "Donna Noble", "Martha Jones" ) );
+        }
     }
 
     @Test
@@ -67,33 +73,34 @@ public class Koan03
         GraphDatabaseService db = universe.getDatabase();
         Node abigailPettigrew = createAbigailPettigrew( db );
 
-        assertNull( db.index()
-                .forNodes( "characters" )
-                .get( "character", "Abigail Pettigrew" )
-                .getSingle() );
+        try ( Transaction tx = db.beginTx() )
+        {
+            assertNull( db.index()
+                    .forNodes( "characters" )
+                    .get( "character", "Abigail Pettigrew" )
+                    .getSingle() );
+        }
 
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        Transaction transaction = db.beginTx();
-        try
+        try (Transaction transaction = db.beginTx())
         {
             db.index()
                     .forNodes( "characters" )
                     .add( abigailPettigrew, "character", abigailPettigrew.getProperty( "character" ) );
             transaction.success();
         }
-        finally
-        {
-            transaction.finish();
-        }
 
         // SNIPPET_END
 
-        assertNotNull( db.index()
+        try (Transaction tx = db.beginTx())
+        {
+            assertNotNull( db.index()
                 .forNodes( "characters" )
                 .get( "character", "Abigail Pettigrew" )
                 .getSingle() );
+        }
     }
 
     @Test
@@ -109,14 +116,20 @@ public class Koan03
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        species = universe.getDatabase()
-                .index()
-                .forNodes( "species" )
-                .query( "species", "S*n" );
+        try (Transaction transaction = universe.getDatabase().beginTx())
+        {
+            species = universe.getDatabase()
+                    .index()
+                    .forNodes( "species" )
+                    .query( "species", "S*n" );
+        }
 
         // SNIPPET_END
 
-        assertThat( species, containsOnlySpecies( "Silurian", "Slitheen", "Sontaran", "Skarasen" ) );
+        try (Transaction transaction = universe.getDatabase().beginTx())
+        {
+            assertThat( species, containsOnlySpecies( "Silurian", "Slitheen", "Sontaran", "Skarasen" ) );
+        }
     }
 
     /**
@@ -128,13 +141,16 @@ public class Koan03
     public void shouldEnsureDatabaseAndIndexInSyncWhenCyberleaderIsDeleted() throws Exception
     {
         GraphDatabaseService db = universe.getDatabase();
-        Node cyberleader = retriveCyberleaderFromIndex( db );
+        Node cyberleader =  null;
+        try (Transaction tx = db.beginTx())
+        {
+            cyberleader = retriveCyberleaderFromIndex( db );
+        }
 
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        Transaction tx = db.beginTx();
-        try
+        try (Transaction tx = db.beginTx())
         {
             for ( Relationship rel : cyberleader.getRelationships() )
             {
@@ -143,22 +159,22 @@ public class Koan03
             cyberleader.delete();
             tx.success();
         }
-        finally
-        {
-            tx.finish();
-        }
 
         // SNIPPET_END
 
-        assertNull( "Cyberleader has not been deleted from the characters index.", retriveCyberleaderFromIndex( db ) );
+        try (Transaction tx = db.beginTx())
+        {
+            assertNull( "Cyberleader has not been deleted from the characters index.",
+                    retriveCyberleaderFromIndex( db ) );
 
-        try
-        {
-            db.getNodeById( cyberleader.getId() );
-            fail( "Cyberleader has not been deleted from the database." );
-        }
-        catch ( NotFoundException nfe )
-        {
+            try
+            {
+                db.getNodeById( cyberleader.getId() );
+                fail( "Cyberleader has not been deleted from the database." );
+            }
+            catch ( NotFoundException nfe )
+            {
+            }
         }
     }
 

@@ -57,20 +57,18 @@ public class Koan02
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        Transaction tx = db.beginTx();
-        try
+        try (Transaction tx = db.beginTx())
         {
             node = db.createNode();
             tx.success();
         }
-        finally
-        {
-            tx.finish();
-        }
 
         // SNIPPET_END
 
-        assertTrue( databaseHelper.nodeExistsInDatabase( node ) );
+        try (Transaction tx = db.beginTx())
+        {
+            assertTrue( databaseHelper.nodeExistsInDatabase( node ) );
+        }
     }
 
     @Test
@@ -81,26 +79,24 @@ public class Koan02
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        Transaction tx = db.beginTx();
-        try
+        try (Transaction tx = db.beginTx())
         {
             theDoctor = db.createNode();
             theDoctor.setProperty( "firstname", "William" );
             theDoctor.setProperty( "lastname", "Hartnell" );
             tx.success();
         }
-        finally
-        {
-            tx.finish();
-        }
 
         // SNIPPET_END
 
-        assertTrue( databaseHelper.nodeExistsInDatabase( theDoctor ) );
+        try (Transaction tx = db.beginTx())
+        {
+            assertTrue( databaseHelper.nodeExistsInDatabase( theDoctor ) );
 
-        Node storedNode = db.getNodeById( theDoctor.getId() );
-        assertEquals( "William", storedNode.getProperty( "firstname" ) );
-        assertEquals( "Hartnell", storedNode.getProperty( "lastname" ) );
+            Node storedNode = db.getNodeById( theDoctor.getId() );
+            assertEquals( "William", storedNode.getProperty( "firstname" ) );
+            assertEquals( "Hartnell", storedNode.getProperty( "lastname" ) );
+        }
     }
 
     @Test
@@ -117,8 +113,7 @@ public class Koan02
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        Transaction tx = db.beginTx();
-        try
+        try (Transaction tx = db.beginTx())
         {
             theDoctor = db.createNode();
             theDoctor.setProperty( "character", "Doctor" );
@@ -132,18 +127,16 @@ public class Koan02
 
             tx.success();
         }
-        finally
-        {
-            tx.finish();
-        }
 
         // SNIPPET_END
 
-        Relationship storedCompanionRelationship = db.getRelationshipById( companionRelationship.getId() );
-        assertNotNull( storedCompanionRelationship );
-        assertNotNull( storedCompanionRelationship.getType().equals( DoctorWhoRelationships.COMPANION_OF ) );
-        assertEquals( susan, storedCompanionRelationship.getStartNode() );
-        assertEquals( theDoctor, storedCompanionRelationship.getEndNode() );
+        try (Transaction tx = db.beginTx()) {
+            Relationship storedCompanionRelationship = db.getRelationshipById( companionRelationship.getId() );
+            assertNotNull( storedCompanionRelationship );
+            assertNotNull( storedCompanionRelationship.getType().equals( DoctorWhoRelationships.COMPANION_OF ) );
+            assertEquals( susan, storedCompanionRelationship.getStartNode() );
+            assertEquals( theDoctor, storedCompanionRelationship.getEndNode() );
+        }
     }
 
     @Test
@@ -155,8 +148,7 @@ public class Koan02
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        Transaction tx = db.beginTx();
-        try
+        try (Transaction tx = db.beginTx())
         {
 
             // This is the tricky part, you have to remove the active
@@ -170,10 +162,6 @@ public class Koan02
             captainKirk.delete();
 
             tx.success();
-        }
-        finally
-        {
-            tx.finish();
         }
 
         // SNIPPET_END
@@ -199,8 +187,7 @@ public class Koan02
         // YOUR CODE GOES HERE
         // SNIPPET_START
 
-        Transaction tx = db.beginTx();
-        try
+        try (Transaction tx = db.beginTx())
         {
 
             Iterable<Relationship> relationships = susan.getRelationships( DoctorWhoRelationships.ENEMY_OF,
@@ -217,14 +204,13 @@ public class Koan02
 
             tx.success();
         }
-        finally
-        {
-            tx.finish();
-        }
 
         // SNIPPET_END
 
-        assertEquals( 1, databaseHelper.destructivelyCountRelationships( susan.getRelationships() ) );
+        try (Transaction tx = db.beginTx())
+        {
+            assertEquals( 1, databaseHelper.destructivelyCountRelationships( susan.getRelationships() ) );
+        }
     }
 
     private Node createInaccurateDatabaseWhereSusanIsEnemyOfTheDoctor()

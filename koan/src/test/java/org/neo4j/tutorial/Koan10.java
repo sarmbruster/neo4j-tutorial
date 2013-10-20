@@ -7,10 +7,13 @@ import static org.neo4j.tutorial.matchers.ContainsOnlySpecificTitles.containsOnl
 
 import java.util.HashSet;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphmatching.CommonValueMatchers;
 import org.neo4j.graphmatching.PatternMatch;
 import org.neo4j.graphmatching.PatternMatcher;
@@ -24,6 +27,7 @@ public class Koan10
 {
 
     private static EmbeddedDoctorWhoUniverse universe;
+    private Transaction tx;
 
     @BeforeClass
     public static void createDatabase() throws Exception
@@ -35,6 +39,16 @@ public class Koan10
     public static void closeTheDatabase()
     {
         universe.stop();
+    }
+
+    @Before
+    public void openTransaction() {
+        tx = universe.getDatabase().beginTx();
+    }
+
+    @After
+    public void closeTransaction() {
+        tx.close();
     }
 
     @Test

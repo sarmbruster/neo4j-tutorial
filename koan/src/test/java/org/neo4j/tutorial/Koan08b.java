@@ -7,12 +7,15 @@ import static org.neo4j.tutorial.matchers.ContainsOnlySpecificTitles.containsOnl
 
 import java.util.Iterator;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.impl.util.StringLogger;
 
 /**
@@ -23,6 +26,7 @@ import org.neo4j.kernel.impl.util.StringLogger;
 public class Koan08b
 {
     private static EmbeddedDoctorWhoUniverse universe;
+    private Transaction tx;
 
     @BeforeClass
     public static void createDatabase() throws Exception
@@ -34,6 +38,16 @@ public class Koan08b
     public static void closeTheDatabase()
     {
         universe.stop();
+    }
+
+    @Before
+    public void openTransaction() {
+        tx = universe.getDatabase().beginTx();
+    }
+
+    @After
+    public void closeTransaction() {
+        tx.close();
     }
 
     @Test

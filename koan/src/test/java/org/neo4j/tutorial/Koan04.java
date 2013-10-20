@@ -58,10 +58,7 @@ public class Koan04
 
         // SNIPPET_END
 
-        Transaction tx = universe.getDatabase()
-                .beginTx();
-
-        try
+        try (Transaction tx = universe.getDatabase().beginTx())
         {
             for ( String characterName : allCharacterNames )
             {
@@ -69,30 +66,28 @@ public class Koan04
                         .createNode();
                 n.setProperty( "character", characterName );
             }
+            assertThat( charactersAutoIndex, containsSpecificCharacters( allCharacterNames ) );
             tx.success();
         }
-        finally
-        {
-            tx.finish();
-        }
-
-        assertThat( charactersAutoIndex, containsSpecificCharacters( allCharacterNames ) );
     }
 
     private Set<String> getAllCharacterNames()
     {
-        Index<Node> characters = universe.getDatabase()
-                .index()
-                .forNodes( "characters" );
-        IndexHits<Node> results = characters.query( "character", "*" );
-
-        HashSet<String> characterNames = new HashSet<String>();
-
-        for ( Node character : results )
+        try (Transaction tx = universe.getDatabase().beginTx())
         {
-            characterNames.add( (String) character.getProperty( "character" ) );
-        }
+            Index<Node> characters = universe.getDatabase()
+                    .index()
+                    .forNodes( "characters" );
+            IndexHits<Node> results = characters.query( "character", "*" );
 
-        return characterNames;
+            HashSet<String> characterNames = new HashSet<String>();
+
+            for ( Node character : results )
+            {
+                characterNames.add( (String) character.getProperty( "character" ) );
+            }
+
+            return characterNames;
+        }
     }
 }

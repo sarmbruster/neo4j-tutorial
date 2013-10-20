@@ -2,7 +2,9 @@ package org.neo4j.tutorial;
 
 import static junit.framework.Assert.assertEquals;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.cypher.ExecutionEngine;
@@ -16,6 +18,7 @@ import org.neo4j.kernel.impl.util.StringLogger;
 public class Koan08d
 {
     private static EmbeddedDoctorWhoUniverse universe;
+    private Transaction tx;
 
     @BeforeClass
     public static void createDatabase() throws Exception
@@ -27,6 +30,16 @@ public class Koan08d
     public static void closeTheDatabase()
     {
         universe.stop();
+    }
+
+    @Before
+    public void openTransaction() {
+        tx = universe.getDatabase().beginTx();
+    }
+
+    @After
+    public void closeTransaction() {
+        tx.close();
     }
 
     @Test
@@ -68,7 +81,7 @@ public class Koan08d
 
         cql = "START doctor=node:characters(character='Doctor') " +
                 "MATCH doctor<-[:PLAYED]-actor " +
-                "DELETE actor.salary";
+                "REMOVE actor.salary";
 
         // SNIPPET_END
 

@@ -13,11 +13,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.cypher.ExecutionEngine;
 import org.neo4j.cypher.ExecutionResult;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.impl.util.StringLogger;
 
 /**
@@ -27,6 +30,7 @@ import org.neo4j.kernel.impl.util.StringLogger;
 public class Koan08c
 {
     private static EmbeddedDoctorWhoUniverse universe;
+    private Transaction tx;
 
     @BeforeClass
     public static void createDatabase() throws Exception
@@ -38,6 +42,16 @@ public class Koan08c
     public static void closeTheDatabase()
     {
         universe.stop();
+    }
+
+    @Before
+    public void openTransaction() {
+        tx = universe.getDatabase().beginTx();
+    }
+
+    @After
+    public void closeTransaction() {
+        tx.close();
     }
 
     @Test
@@ -141,7 +155,7 @@ public class Koan08c
 
         cql = "START doctor = node:characters(character = 'Doctor')"
                 + "MATCH (doctor)<-[:PLAYED]-(actor)"
-                + "RETURN avg(actor.salary?) AS cash";
+                + "RETURN avg(actor.salary) AS cash";
 
 
         // SNIPPET_END
@@ -162,7 +176,7 @@ public class Koan08c
 
         cql = "START davison=node:actors(actor='Peter Davison') "
                 + "MATCH (davison)-[:APPEARED_IN]->(episode)<-[:APPEARED_IN]-(enemy)-[:ENEMY_OF]->()<-[:PLAYED]-(davison)"
-                + "RETURN episode.episode, episode.title, collect(enemy.species?) AS species, collect(enemy.character?) AS characters "
+                + "RETURN episode.episode, episode.title, collect(enemy.species) AS species, collect(enemy.character) AS characters "
                 + "ORDER BY episode.episode";
 
 
