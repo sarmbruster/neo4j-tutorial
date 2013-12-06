@@ -160,7 +160,7 @@ public final class FunctionalTestHelper
 
     public GraphDatabaseService getDatabase()
     {
-        return server.getDatabase().graph;
+        return server.getDatabase().getGraph();
     }
 
     public String getWebadminUri()

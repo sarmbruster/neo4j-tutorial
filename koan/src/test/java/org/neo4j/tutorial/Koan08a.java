@@ -32,8 +32,8 @@ public class Koan08a
 
         final ExecutionResult executionResult = engine.execute( "START n=node(*) return n" );
 
-        final int oneNewNodePlusTheReferenceNodeExpected = 2;
-        assertEquals( oneNewNodePlusTheReferenceNodeExpected, executionResult.size() );
+        final int oneNewNodeExpected = 1;
+        assertEquals( oneNewNodeExpected, executionResult.size() );
     }
 
     @Test

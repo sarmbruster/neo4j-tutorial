@@ -14,8 +14,8 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.index.IndexHits;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.tooling.GlobalGraphOperations;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 public class DatabaseHelper
 {
@@ -26,14 +26,14 @@ public class DatabaseHelper
         this.db = db;
     }
 
-    public static EmbeddedGraphDatabase createDatabase()
+    public static GraphDatabaseService createDatabase()
     {
-        return new EmbeddedGraphDatabase( createTempDatabaseDir().getAbsolutePath() );
+        return new GraphDatabaseFactory().newEmbeddedDatabase( createTempDatabaseDir().getAbsolutePath() );
     }
 
-    public static EmbeddedGraphDatabase createDatabase( String dbDir )
+    public static GraphDatabaseService createDatabase( String dbDir )
     {
-        return new EmbeddedGraphDatabase( dbDir );
+        return new GraphDatabaseFactory().newEmbeddedDatabase( dbDir );
     }
 
     public static File createTempDatabaseDir()
