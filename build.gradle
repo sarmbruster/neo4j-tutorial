@@ -7,7 +7,7 @@ apply plugin: 'application'
 project.ext {
     jdkVersion = JavaVersion.VERSION_1_7
     sourceCompatibility = jdkVersion
-    neo4jVersion = "2.0.0-RC1"
+    neo4jVersion = "2.0.0"
     jerseyVersion = "1.9"
     junitVersion = "4.11"
 }
@@ -48,10 +48,6 @@ idea {
             }
         }
     }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
 }
 
 task snippets << {
