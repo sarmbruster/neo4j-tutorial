@@ -9,3 +9,4 @@ build/
 .classpath
 /out
 /gradle/wrapper/gradle-*-bin.zip
+/maven-repo-local
