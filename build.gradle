@@ -69,3 +69,16 @@ mainClassName = 'org.neo4j.shell.StartClient'
 * implement task shell
 * REST Client: cypher + transactional endpoint
 */
+
+
+// make sure gradle wrapper does not need to download gradle from internet
+wrapper {
+    //archiveBase = "PROJECT"
+    //distributionBase = "PROJECT"
+    distributionUrl = "gradle-${gradleVersion}-bin.zip"
+    gradleVersion = "1.11"
+}
+
+wrapper.doFirst {
+   ant.get(src:'http://services.gradle.org/distributions/gradle-1.11-bin.zip', dest: 'gradle/wrapper', usetimestamp: true)
+}
