@@ -12,8 +12,10 @@ project.ext {
     junitVersion = "4.11"
 }
 
-repositories {
-    maven { url "file://maven-repo-local" }
+allprojects {
+    repositories {
+        maven { url "${rootProject}/maven-repo-local" }
+    }
 }
 
 subprojects {
