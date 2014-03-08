@@ -12,12 +12,6 @@ project.ext {
     junitVersion = "4.11"
 }
 
-allprojects {
-    repositories {
-        maven { url "${rootProject}/maven-repo-local" }
-    }
-}
-
 subprojects {
     apply plugin: "java"
     apply plugin: 'idea'
